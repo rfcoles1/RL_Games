@@ -25,7 +25,7 @@ class network():
         self.fc1 = slim.fully_connected(self.data, num_hidden,
             activation_fn = tf.nn.relu,
             weights_initializer = tf.contrib.layers.xavier_initializer(),
-            biases_initializer = tf.ones_initializer())
+            biases_initializer = tf.zeros_initializer())
         self.drop1 = tf.nn.dropout(self.fc1, self.keep_prob)
         self.fc2 = slim.fully_connected(self.drop1, num_hidden,
             activation_fn = tf.nn.relu,
@@ -35,7 +35,7 @@ class network():
         self.fc3 = slim.fully_connected(self.drop2, num_hidden,
             activation_fn = tf.nn.relu,
             weights_initializer = tf.contrib.layers.xavier_initializer(),
-            biases_initializer = tf.zeros_initializer())
+            biases_initializer = tf.ones_initializer())
         self.drop3 = tf.nn.dropout(self.fc2, self.keep_prob)
 
         self.prediction = slim.fully_connected(self.drop3, 1,

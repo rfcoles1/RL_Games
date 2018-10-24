@@ -1,9 +1,9 @@
 import numpy as np
 import gym
 
-#import matplotlib.pyplot as plt
-#import matplotlib.gridspec as gridspec
-#from pylab import savefig
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from pylab import savefig
 
 from SinEngine import Engine
 
@@ -40,7 +40,8 @@ class SinEnv2(gym.Env):
         self.engine.uncert = 0
         self.engine.reset()
         self.gain()
-        self.train()
+        #for _ in range(10):#10 to keep it consistent 
+        #    self.train()
         return self.engine.get_state()
 
     def get_state(self):
@@ -62,12 +63,14 @@ class SinEnv2(gym.Env):
 
     def do_action(self,action):
         if action == 3:
-            if self.num_obs < 10:
-                self.gain() 
-                self.num_obs += 1
+            #if self.num_obs < 10:
+            #    self.gain() 
+            #    self.num_obs += 1
+            self.gain()
             return
         if action == 4:
             self.train()
+            self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
             return
 
         self.engine.x += (action-1)*self.incr
@@ -76,7 +79,8 @@ class SinEnv2(gym.Env):
         if self.engine.x > self.engine.xmax:
             self.engine.x = self.engine.xmax
  
-        self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
+        if action != 1:#prevent the agent doing nothing and getting a different score
+            self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
 
     def gain(self):
         width = 0.25
@@ -102,8 +106,9 @@ class SinEnv2(gym.Env):
     def get_reward(self):
         state = self.engine.get_state()
         true_y = self.get_true_value([state[0]])
-        msd = abs(true_y - self.target)
-        return -msd - state[2]
+        msd_true = abs(true_y - self.target)
+        msd_fake = abs(state[1] - self.target)
+        return -msd_true - msd_fake - state[2]
 
     def render(self, mode = 'human'):
         return 0
