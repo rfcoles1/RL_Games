@@ -74,19 +74,25 @@ register(
 
 register(
     id = 'SinGame-v0',
-    entry_point = 'Games.FunctionLearning.SinGame:SinEnv',
+    entry_point = 'Games.FunctionLearning.SinGame_Old:SinEnv',
     max_episode_steps = 100,
 )
 
 register(
     id = 'SinGame-v1',
+    entry_point = 'Games.FunctionLearning.SinGame_v1:SinEnv2',
+    max_episode_steps = 100,
+)
+
+register(
+    id = 'SinGame-v2',
     entry_point = 'Games.FunctionLearning.SinGame_v2:SinEnv2',
     max_episode_steps = 100,
 )
 
 register(
-    id = 'FuncGame-v1',
-    entry_point = 'Games.FunctionLearning.FuncGame2d:FuncEnv',
+    id = 'SinGame-v3',
+    entry_point = 'Games.FunctionLearning.SinGame_v3:SinEnv2',
     max_episode_steps = 100,
 )
 

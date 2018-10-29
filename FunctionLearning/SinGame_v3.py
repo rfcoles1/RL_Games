@@ -106,8 +106,8 @@ class SinEnv2(gym.Env):
     def get_reward(self):
         state = self.engine.get_state()
         true_y = self.get_true_value([state[0]])
-        msd_true = abs(true_y - self.target)
-        msd_fake = 0#abs(state[1] - self.target)
+        msd_true = 0#abs(true_y - self.target)
+        msd_fake = abs(state[1] - self.target)
         return -msd_true - msd_fake - state[2]
 
     def render(self, mode = 'human'):
