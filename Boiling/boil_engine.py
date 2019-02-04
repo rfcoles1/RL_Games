@@ -11,7 +11,7 @@ HeatCap_Water = 4.148 #kJ/kg/C
 HeatCap_Steam = 1.996 #kJ/kg/C
 
 class Engine(object):
-    def __init__(self, T = 10, M = 1): #must initalise at a temperature, not a mass fraction
+    def __init__(self, T = 21, M = 1): #must initalise at a temperature, not a mass fraction
         self.Ti = T 
         self.RoomTemp = 21 
         #if starting not at room temp, initial value for Energy in will be the energy taken to get there 
@@ -46,7 +46,7 @@ class Engine(object):
         kern.lengthscale.fix()
         self.TempModel.optimize()
         
-        kern = GPy.kern.RBF(input_dim = 1, variance = .1, lengthscale=125.0)
+        kern = GPy.kern.RBF(input_dim = 1, variance = .1, lengthscale=200.0)
         self.MassModel = GPy.models.GPRegression(np.array(self.input_memory).reshape(-1,1),\
             np.array(self.output_memory_M).reshape(-1,1), kern)
         self.MassModel.Gaussian_noise.variance = 0

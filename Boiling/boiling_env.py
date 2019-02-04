@@ -10,8 +10,8 @@ class HeatEnv(gym.Env):
         self.done = False #There is no 'done' state, game runs until time limit 
 
         #change as desired
-        self.TargetTemp = 100
-        self.TargetMass = np.array([0, 0.5, 0.5])
+        self.TargetTemp = 80
+        self.TargetMass = np.array([0, 1, 0])
 
         self.incr = 10 #amount of energy added/taken per step 
 
@@ -32,7 +32,7 @@ class HeatEnv(gym.Env):
         reward = self.get_reward()
         return next_state, reward, self.done, {}
 
-    #reward scheme is under revision, need to be scaled such that 
+    #reward scheme is under revision, need to be scaled such that one number does not dominate, i.e. temperature difference 
     def get_reward(self):
         state = self.get_state()
         true_T, true_M = self.engine.get_true_value(self.engine.EnergyIn)
@@ -44,9 +44,7 @@ class HeatEnv(gym.Env):
         print(T_reward)
         
         dM_pred = abs(self.engine.decodeMass(state[0][1]) - self.TargetMass)
-        print(dM_pred)
         dM_true = abs(true_M - self.TargetMass)
-        print(dM_true)
         Merr = state[1][1]
         M_reward = -(np.sum(dM_true) + np.sum(dM_pred) + Merr)
         print(M_reward)
