@@ -12,6 +12,7 @@ seed = 100
 np.random.seed(seed)
 tf.set_random_seed(seed)
 
+
 class network():
     def __init__(self):
         self.curr_epoch = 0
@@ -95,27 +96,24 @@ class Engine(object):
         self.sess.run(tf.global_variables_initializer())
 
         self.reset()
-
-        self.xmin = -2
-        self.xmax = 8
         
     def reset(self):
         self.sess.run(tf.global_variables_initializer())
         self.net.curr_epoch = 0
         self.input_memory = []
-        self.output_memory = []
-   
+        
+        self.output_memory = np.empty_like([[0], [1,1,1]])
+        print self.output_memory
     def get_state(self):
-        return np.array([self.x,self.y,self.uncert])     
+        return np.array([self.EnergyIn, self.Temp, self.Terr, self.MassFractions, self.Merr])     
 
-    def set_state(self, x):
-         if x > xmin and x < xmax:
-            self.x = x
-            self.y, self.uncert = self.engine.get_prediction(self.engine.x) 
+    def set_state(self, E):
+        self.EnergyIn = E
+        self.Temp, self.Terr, self.MassFractions, self.Merr = self.get_prediction(self.engine.EnergyIn) 
        
-    def get_prediction(self,x_val):
-        pred, std = self.net.predict(self.sess, x_val)
-        return pred, std
+    def get_prediction(self,E_vals):
+        Tpred, Tstd, Mpred, Mstd = self.net.predict(self.sess, x_val)
+        return Tpred, Tstd, Mpred, Mstd
         
     def add_to_memory(self, new_inp, new_out):
         self.input_memory = np.concatenate([self.input_memory, new_inp])
@@ -127,4 +125,11 @@ class Engine(object):
     def test_net(self,):
         self.Means, self.Sdvs, self.Predictions = self.net.test(self.sess, np.arange(self.xmin,self.xmax,0.01))
         return self.Means, self.Sdvs
+
+    def gen_critPoints(self, T):
+        self.Upper_Melting_Energy = (MeltingPoint - self.T) * HeatCap_Water
+        self.Lower_Melting_Energy = self.Upper_Melting_Energy - LatentHeat_Fusion
+
+        self.Lower_Boiling_Energy = (BoilingPoint - self.T) * HeatCap_Water
+        self.Upper_Boiling_Energy = self.Lower_Boiling_Energy + LatentHeat_Vapor
 

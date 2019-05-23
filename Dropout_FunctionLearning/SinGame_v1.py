@@ -1,11 +1,11 @@
 import numpy as np
 import gym
 
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-from pylab import savefig
+#import matplotlib.pyplot as plt
+#import matplotlib.gridspec as gridspec
+#from pylab import savefig
 
-from SinEngine import Engine
+from SinEngine_v1 import Engine
 
 import time 
 
@@ -36,10 +36,9 @@ class SinEnv2(gym.Env):
     def reset(self):
         self.num_obs = 0
         self.engine.x = 0
-        
+        self.engine.y = self.get_true_value([self.engine.x])
+        self.engine.uncert = 0
         self.engine.reset()
-        self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
-        
         #self.gain()
         #for _ in range(10):#10 to keep it consistent 
         #    self.train()

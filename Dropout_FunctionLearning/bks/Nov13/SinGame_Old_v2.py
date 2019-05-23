@@ -1,6 +1,6 @@
 import numpy as np
 import gym
-from SinEngine import Engine
+from SinEngine_v0 import Engine
 
 class SinEnv(gym.Env):
     def __init__(self):

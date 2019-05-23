@@ -1,21 +1,8 @@
 import numpy as np
 import gym
+from SinEngine_v0 import Engine
 
-#import matplotlib.pyplot as plt
-#import matplotlib.gridspec as gridspec
-#from pylab import savefig
-
-from SinEngine import Engine
-
-import time 
-
-"""
-Updated version of the Sin Game
-Separated training and obtaining data
-"""
-
-
-class SinEnv2(gym.Env):
+class SinEnv(gym.Env):
     def __init__(self):
         self.engine = Engine()
         self.done = False
@@ -23,7 +10,7 @@ class SinEnv2(gym.Env):
         self.target = 3 #target y value the function
         self.incr = 0.1 #how much the agent can move in the x direction
 
-        self.action_space = gym.spaces.Discrete(5)
+        self.action_space = gym.spaces.Discrete(4)
         self.reset()
 
     def get_true_value(self, x_vals, noise = 0):
@@ -36,13 +23,10 @@ class SinEnv2(gym.Env):
     def reset(self):
         self.num_obs = 0
         self.engine.x = 0
-        
+        self.engine.y = self.get_true_value([self.engine.x])
+        self.engine.uncert = 0
         self.engine.reset()
-        self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
-                
-        #self.gain()
-        #for _ in range(10):#10 to keep it consistent 
-        #    self.train()
+        self.gain_knowledge()
         return self.engine.get_state()
 
     def get_state(self):
@@ -53,37 +37,23 @@ class SinEnv2(gym.Env):
         next_state = self.engine.get_state()
         reward = self.get_reward()
         return next_state, reward, self.done, {}
- 
-    """   
-    action 0: move left
-    action 1: no move
-    action 2: move right
-    action 3: get more data
-    action 4: train on current data
-    """
-
+    
     def do_action(self,action):
         if action == 3:
-            #if self.num_obs < 10:
-            #    self.gain() 
-            #    self.num_obs += 1
-            self.gain()
+            if self.num_obs < 10:
+                self.gain_knowledge() 
+                self.num_obs += 1
             return
-        if action == 4:
-            self.train()
-            self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
-            return
-
+        
         self.engine.x += (action-1)*self.incr
         if self.engine.x < self.engine.xmin:
             self.engine.x = self.engine.xmin
         if self.engine.x > self.engine.xmax:
             self.engine.x = self.engine.xmax
  
-        if action != 1:#prevent the agent doing nothing and getting a different score
-            self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
+        self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
 
-    def gain(self):
+    def gain_knowledge(self):
         width = 0.25
         new_x = []
         
@@ -98,27 +68,25 @@ class SinEnv2(gym.Env):
             currx += 0.001
             
         new_y = self.get_true_value(new_x)
-        self.engine.add_to_memory(new_x, new_y)        
-        
-    def train(self):     
-        self.engine.train_net(100)
+        self.engine.add_to_memory(new_x, new_y)
+        self.engine.train_net(1000)
+
         self.engine.y, self.engine.uncert = self.engine.get_prediction(self.engine.x)
 
     def get_reward(self):
         state = self.engine.get_state()
         true_y = self.get_true_value([state[0]])
-        msd_true = abs(true_y - self.target)
-        msd_fake = 0#abs(state[1] - self.target)
-        return -msd_true - msd_fake - state[2]
+        msd = abs(state[1] - self.target)
+        return -msd - state[2]
 
     def render(self, mode = 'human'):
         return 0
 
     def plt_trained(self):
-        x_range = np.arange(self.engine.xmin,self.engine.xmax,0.01)
+        x_range = np.arange(self.engine.xmin,self.engine.xmax,0.001)
         self.engine.test_net()
         plt.clf()
-        #fig = plt.figure()
+        fig = plt.figure()
         gs = gridspec.GridSpec(2,1, height_ratios = [1,3])
         ax1 = plt.subplot(gs[0])
         plt.plot(x_range, self.engine.Sdvs)
@@ -139,5 +107,5 @@ class SinEnv2(gym.Env):
             facecolor = 'r', alpha = 0.1) 
         plt.scatter(self.engine.input_memory, self.engine.output_memory, c = 'b', s = 12)
         plt.plot(x_range, self.get_true_value(x_range), c = 'k')
-        plt.show()                              
+                                          
 
