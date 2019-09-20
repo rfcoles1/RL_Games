@@ -1,6 +1,8 @@
 from gym.envs.registration import register
 
-#Dumb Loop
+#---------------------------------------------#
+#Dumb Loop - Learning a sequence
+
 register(
     id='DumbLoop-v0',
     entry_point='Games.Dumb_Loop.loop_perimeter:LoopEnv',
@@ -18,21 +20,10 @@ register(
     entry_point='Games.Dumb_Loop.loop_area:LoopEnv',
     max_episode_steps = 200,
 )
-#---------------------------------------------#
-#Variable MC
-register(
-    id='VMC-v0',
-    entry_point='Games.VariableMountainCar.VarMC_BothSides:VMC_Env',
-    max_episode_steps = 200,
-)
 
-register(
-    id='VMC-v1',
-    entry_point='Games.VariableMountainCar.VarMC_RightSide:VMC_Env',
-    max_episode_steps = 200,
-)
 #---------------------------------------------#
 #ODE Reactions 
+
 register(
     id='Reaction-v0',
     entry_point='Games.ODE_Reactions.Reaction_1:Reaction_Env',
@@ -58,42 +49,50 @@ register(
 )
 
 #---------------------------------------------#
+#Water Heating 
 
-#---------------------------------------------#
-#Function Learning
-
+#up or down increase
 register(
-    id = 'SinGame-v11',
-    entry_point = 'Games.FunctionLearning.SinGame_Old:SinEnv',
+    id='WaterHeater-v0',
+    entry_point='Games.WaterHeater.heat_game_v0:HeatEnv',
     max_episode_steps = 100,
 )
 
+#discrete 'clicks' on a dial
 register(
-    id = 'SinGame-v1',
-    entry_point = 'Games.FunctionLearning.SinGame_v1:SinEnv2',
+    id='WaterHeater-v1',
+    entry_point='Games.WaterHeater.heat_game_v1:HeatEnv',
     max_episode_steps = 100,
 )
 
+#continuous dial 
 register(
-    id = 'SinGame-v2',
-    entry_point = 'Games.FunctionLearning.SinGame_v2:SinEnv2',
-    max_episode_steps = 100,
-)
-
-register(
-    id = 'SinGame-v3',
-    entry_point = 'Games.FunctionLearning.SinGame_v3:SinEnv2',
+    id='WaterHeater-v2',
+    entry_point='Games.WaterHeater.heat_game_v2:HeatEnv',
     max_episode_steps = 100,
 )
 
 #---------------------------------------------#
-#Gaussian Processes
+#Function Learning - Unable to achieve anything with these
 
+#test and train as one action
 register(
-    id = 'GP_Water-v0',
-    entry_point = 'Games.Boiling.boiling_env:HeatEnv',
+    id = 'DropOut_Sin-v0',
+    entry_point = 'Games.Dropout_FunctionLearning.SinGame_v0:SinEnv',
     max_episode_steps = 100,
 )
 
+#separated actions
+register(
+    id = 'DropOut_Sin-v1',
+    entry_point = 'Games.Dropout_FunctionLearning.SinGame_v1:SinEnv2',
+    max_episode_steps = 100,
+)
 
+#different example - remains unfinished, moved on to Gaussian Processes 
+register(
+    id = 'DropOut_Water-v0',
+    entry_point = 'Games.Dropout_FunctionLearning.WaterGame:BoilEnv',
+    max_episode_steps = 100,
+)
 
