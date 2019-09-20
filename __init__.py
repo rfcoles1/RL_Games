@@ -18,7 +18,19 @@ register(
     entry_point='Games.Dumb_Loop.loop_area:LoopEnv',
     max_episode_steps = 200,
 )
+#---------------------------------------------#
+#Variable MC
+register(
+    id='VMC-v0',
+    entry_point='Games.VariableMountainCar.VarMC_BothSides:VMC_Env',
+    max_episode_steps = 200,
+)
 
+register(
+    id='VMC-v1',
+    entry_point='Games.VariableMountainCar.VarMC_RightSide:VMC_Env',
+    max_episode_steps = 200,
+)
 #---------------------------------------------#
 #ODE Reactions 
 register(
@@ -46,34 +58,12 @@ register(
 )
 
 #---------------------------------------------#
-#Water Heating 
-
-#up or down increase
-register(
-    id='WaterHeater-v0',
-    entry_point='Games.WaterHeater.heat_game_v0:HeatEnv',
-    max_episode_steps = 100,
-)
-
-#discrete 'clicks' on a dial
-register(
-    id='WaterHeater-v1',
-    entry_point='Games.WaterHeater.heat_game_v1:HeatEnv',
-    max_episode_steps = 100,
-)
-
-#continuous dial 
-register(
-    id='WaterHeater-v2',
-    entry_point='Games.WaterHeater.heat_game_v2:HeatEnv',
-    max_episode_steps = 100,
-)
 
 #---------------------------------------------#
 #Function Learning
 
 register(
-    id = 'SinGame-v0',
+    id = 'SinGame-v11',
     entry_point = 'Games.FunctionLearning.SinGame_Old:SinEnv',
     max_episode_steps = 100,
 )
@@ -97,4 +87,13 @@ register(
 )
 
 #---------------------------------------------#
+#Gaussian Processes
+
+register(
+    id = 'GP_Water-v0',
+    entry_point = 'Games.Boiling.boiling_env:HeatEnv',
+    max_episode_steps = 100,
+)
+
+
 
